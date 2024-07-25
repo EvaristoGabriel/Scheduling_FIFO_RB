@@ -7,6 +7,6 @@ Foram desenvolvidos dois algoritmos para escalonamento de processos, utilizamos 
 - Processo X: Tempo_entrada, Tempo_execução, Prioridade
 
 
-## FiFO (First in First out)
+## FIFO (First in First out)
 
 ## Round-Robin
