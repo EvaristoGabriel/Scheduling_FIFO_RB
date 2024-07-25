@@ -36,24 +36,41 @@ def fifo ():
 		tempo_atual += tempos[i]
 		soma += tempo_atual - entradas[i]
 	
-	print(f"turn around: {soma}/{n} = {soma/n}")
 	return float(soma/n)
 
-# # #LEITURA DAS DEADLINES
-# def lerDeadlines():
-# 	del deadlines[:]
-# 	for x in range(0,n):
-# 		print ("Informe a Deadline do processo ", x+1, ": ")
-# 		deadlines.append(input())
-# 		pass
+def round_robin ():
+	quantum = int(input("Qual o valor do quantum: "))
+	df_ordenado = df.sort_values(by='Tempo de entrada')
+	entradas = list(df_ordenado['Tempo de entrada'])
+	tempos = list(df_ordenado['Tempo de execução'])
+	tempo_final_processo = 0
+	tempo_atual = 0
+	i = 0
+	while len(tempos) > 0:
+		if entradas[i] <= tempo_atual:
+			if tempos[i] > quantum:
+				tempos[i] = tempos[i] - quantum
+				tempo_atual += quantum
+			else:
+				tempo_atual += tempos[i]
+				tempos[i] = 0
+				tempo_final_processo += tempo_atual
 
+			if tempos[i] <= 0:
+				tempos.pop(i)
+			else: 
+				i+= 1
+			if i == len(tempos):
+				i = 0
+		else: 
+			i = 0
+	
+	return float(tempo_final_processo/n)
 
-
-deadlines = []
 
 
 def menu():
-	print ("Selecione o algoritmo de escalonamento\n (1) FIFO\n (2) Gerar Gráfico (Nao funciona ainda)\n (0) Sair")
+	print ("Selecione o algoritmo de escalonamento\n (1) FIFO\n (2) Round-Robin\n (0) Sair")
 	escolha = int(input("Escolha: "))
 	while escolha != 0:
 		if escolha == 1:
@@ -62,13 +79,9 @@ def menu():
 			print ("==============================")
 			break
 		elif escolha == 2:
-			quantum = float(input("Insira o valor do quantum: "))
-			lerDeadlines()
-			arquivo = open('resultados.json', 'w')
-			saida = {'labels': ["FIFO",  "Round Robin", ],'datasets': [{'data': [fifo()]}]}
-			json.dump(saida, arquivo, indent=2)
-			arquivo.close()
-			#Criar arquivo aqui
+			print ("============ Round-Robin ============")
+			print ("TURN AROUND MEDIO: ", round_robin())
+			print ("==============================")
 			break
 		else:
 			print ("Comando Inválido")
