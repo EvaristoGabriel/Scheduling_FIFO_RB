@@ -45,26 +45,42 @@ def round_robin ():
 	tempos = list(df_ordenado['Tempo de execução'])
 	tempo_final_processo = 0
 	tempo_atual = 0
+	index_tempo = 0
+	processos_ativos = []
+	for i in range(0, len(entradas)):
+		if entradas[i] == 0:
+			processos_ativos.append(tempos[0])
+			tempos.pop(0)
+			index_tempo += 1 
 	i = 0
-	while len(tempos) > 0:
+	while len(processos_ativos) > 0:
+		print(entradas, tempos, processos_ativos, tempo_final_processo, tempo_atual)
+		if len(tempos) >= 1:
+			print(f"chegou aqui no tempo {tempo_atual}, {entradas[index_tempo]}")
+			if tempo_atual >= entradas[index_tempo]:
+				print(f"chegou aqui no tempo {tempo_atual}")
+				processos_ativos.append(tempos[0])
+				tempos.pop(0)
+				index_tempo +=1
+
 		if entradas[i] <= tempo_atual:
-			if tempos[i] > quantum:
-				tempos[i] = tempos[i] - quantum
+			if processos_ativos[i] > quantum:
+				processos_ativos[i] = processos_ativos[i] - quantum
 				tempo_atual += quantum
 			else:
-				tempo_atual += tempos[i]
-				tempos[i] = 0
+				tempo_atual += processos_ativos[i]
+				processos_ativos[i] = 0
 				tempo_final_processo += tempo_atual
 
-			if tempos[i] <= 0:
-				tempos.pop(i)
+			if processos_ativos[i] <= 0:
+				processos_ativos.pop(i)
 			else: 
 				i+= 1
-			if i == len(tempos):
+			if i == len(processos_ativos):
 				i = 0
 		else: 
 			i = 0
-	
+	print(f"Tempo final/numero de processos = {tempo_final_processo}/{n} = {tempo_final_processo/n}")
 	return float(tempo_final_processo/n)
 
 
