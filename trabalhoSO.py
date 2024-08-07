@@ -1,107 +1,136 @@
 import json #IMPORTA O JSON PARA ESCREVER AS SAÍDAS DO GRÁFICO JAVASCRIPT
 import sys
 import pandas as pd
-
+import matplotlib.pyplot as plt
+from Process import Process
 
 def ler_arquivo(file_path):
-	file = open(file_path)
-	dataset = []	
+	file = open(file_path)	
+	processes = []
 	for line in file:
-		data = []
 		line = line.replace('\n', '')
 		splited_line = line.split(':')
-		data.append(splited_line[0])
+		name = splited_line[0]
 		splited_line = splited_line[1].split(',')
-		data.append(splited_line[0].replace(' ', ''))
-		data.append(splited_line[1])
-		data.append(splited_line[2])
-		dataset.append(data)
-	df = pd.DataFrame(dataset,columns=['Processos','Tempo de entrada', 'Tempo de execução', 'Prioridade'])
-	df = df.astype({"Tempo de entrada": int, "Tempo de execução": int, "Prioridade": int})
-	print(f"{len(dataset)} processos foram adicionados:", end='\n')
-	print(df)
-	return df
+		start_time= splited_line[0].replace(' ', '')
+		execution_time = splited_line[1]
+		priority = splited_line[2]
+		processes.append(Process(name, start_time, execution_time, priority))
+	return processes
 
 
 
 #FUNÇÃO DO ALGORITMO FIFO
 def fifo ():
-	df_ordenado = df.sort_values(by='Tempo de entrada')
-	entradas = list(df_ordenado['Tempo de entrada'])
-	tempos = list(df_ordenado['Tempo de execução'])
+	sorted_list = sorted(processes, key=lambda p: p.start_time)
+	entradas = []
+	tempos = []
+	processos = []
+	for process in sorted_list:
+		entradas.append(process.start_time)
+		tempos.append(process.execution_time)
+		processos.append(process.name)
+
 	soma = 0
+	tempos_fim = []
+	tempos_inicio = [0]
 	tempo_atual = 0
-	print(entradas)
 	for i in range(0,len(entradas)):
 		tempo_atual += tempos[i]
+		tempos_fim.append(tempo_atual)
+		tempos_inicio.append(tempo_atual)
 		soma += tempo_atual - entradas[i]
-	
+	tempos_inicio.pop(len(tempos_inicio)-1)
+	# Calculando a duração dos processos
+	duracoes = [fim - inicio for inicio, fim in zip(tempos_inicio, tempos_fim)]
+	# # Criando o gráfico
+	plt.figure(figsize=(10, 6))
+	print(duracoes,processos,tempos_inicio)
+	plt.barh(processos, duracoes, left=tempos_inicio)
+
+	# Adicionando rótulos e título
+	plt.xlabel('Tempo')
+	plt.ylabel('Processos')
+	plt.title('Mapeamento de Processos')
+
+	plt.show()
 	return float(soma/n)
 
 def round_robin ():
 	quantum = int(input("Qual o valor do quantum: "))
-	df_ordenado = df.sort_values(by='Tempo de entrada')
-	entradas = list(df_ordenado['Tempo de entrada'])
-	tempos = list(df_ordenado['Tempo de execução'])
-	tempo_final_processo = 0
-	tempo_atual = 0
-	index_tempo = 0
+	sorted_process = sorted(processes, key=lambda p: p.start_time)
+	tempo_atual = 0.0
 	processos_ativos = []
-	for i in range(0, len(entradas)):
-		if entradas[i] == 0:
-			processos_ativos.append(tempos[0])
-			tempos.pop(0)
-			index_tempo += 1 
-	i = 0
-	while len(processos_ativos) > 0:
-		print(entradas, tempos, processos_ativos, tempo_final_processo, tempo_atual)
-		if len(tempos) >= 1:
-			print(f"chegou aqui no tempo {tempo_atual}, {entradas[index_tempo]}")
-			if tempo_atual >= entradas[index_tempo]:
-				print(f"chegou aqui no tempo {tempo_atual}")
-				processos_ativos.append(tempos[0])
-				tempos.pop(0)
-				index_tempo +=1
+	while True:
+		if len(processos_ativos) <= len(sorted_process):
+			for process in sorted_process:
+				# Adicionando novos processos ao looping, 
+				if process.start_time <= tempo_atual and process.name not in processos_ativos or process.start_time <= tempo_atual+quantum and process.name not in processos_ativos:
+					processos_ativos.append(process.name)
+		print(f"Ordem atual dos processos: {processos_ativos}")
+		for processo in processos_ativos:
+			for process in sorted_process:
+				if process.name == processo and process.get_tempo() > 0:
+					if process.get_tempo() >= quantum:
+						process.quantum(quantum)
+						process.start_t(tempo_atual)
+						tempo_atual += quantum
+						process.end_t(tempo_atual)
 
-		if entradas[i] <= tempo_atual:
-			if processos_ativos[i] > quantum:
-				processos_ativos[i] = processos_ativos[i] - quantum
-				tempo_atual += quantum
-			else:
-				tempo_atual += processos_ativos[i]
-				processos_ativos[i] = 0
-				tempo_final_processo += tempo_atual
+					else:
+						aux = process.get_tempo()
+						process.quantum(aux)
+						process.start_t(tempo_atual)
+						tempo_atual += aux
+						process.end_t(tempo_atual)
 
-			if processos_ativos[i] <= 0:
-				processos_ativos.pop(i)
-			else: 
-				i+= 1
-			if i == len(processos_ativos):
-				i = 0
-		else: 
-			i = 0
-	print(f"Tempo final/numero de processos = {tempo_final_processo}/{n} = {tempo_final_processo/n}")
-	return float(tempo_final_processo/n)
+
+		cont_zerados = 0
+		for process in sorted_process:
+			if process.get_tempo() == 0:
+				cont_zerados += 1
+		
+		if cont_zerados == len(sorted_process):
+			break
+	plt.figure(figsize=(10, 6))
+	for i, process in enumerate(processes):
+		for start, end in zip(process.start, process.end):
+			plt.barh(process.name, end - start, left=start, height=0.5, label=process.name)
+
+	# Adicionando rótulos e título
+	plt.xlabel('Tempo')
+	plt.ylabel('Processos')
+	plt.title('Mapeamento de Processos')
+
+	plt.show()
+	tempo_final = 0
+	for process in sorted_process:
+		tempo_final += (process.end[-1] - process.start_time) 
+		# print(f'Nome: {process.name}, Tempo sobrando: {process.get_tempo()}, tempos inicio:{process.start}, tempos finais:{process.end}')
+
+
+	print(f"Tempo final/numero de processos = {tempo_final}/{n} = {tempo_final/n}")
+	return float(tempo_final/n)
 
 
 
 def menu():
-	print ("Selecione o algoritmo de escalonamento\n (1) FIFO\n (2) Round-Robin\n (0) Sair")
-	escolha = int(input("Escolha: "))
+	escolha = -1
 	while escolha != 0:
+		print ("Selecione o algoritmo de escalonamento\n (1) FIFO\n (2) Round-Robin\n (0) Sair")
+		escolha = int(input("Escolha: "))
 		if escolha == 1:
 			print ("============ FIFO ============")
 			print ("TURN AROUND MEDIO: ", fifo())
 			print ("==============================")
-			break
 		elif escolha == 2:
 			print ("============ Round-Robin ============")
 			print ("TURN AROUND MEDIO: ", round_robin())
 			print ("==============================")
-			break
+		elif escolha == 0:
+			print ("Saindo ...")
 		else:
 			print ("Comando Inválido")
-			break
 
 try:
 	print(f"Lendo o arquivo: {sys.argv[1]}")
@@ -111,9 +140,11 @@ except IndexError:
 	path = "teste1.txt"
 	
 
-df = ler_arquivo(path)
-n= len(df)
-menu()
+processes = ler_arquivo(path)
+for process in processes:
+    print(f'Nome: {process.name}, Tempo de execução: {process.execution_time}, Tempo em que o processo é incluído na fila: {process.start_time}, Prioridade: {process.priority}')
 
+n= len(processes)
+menu()
 
 
