@@ -1,5 +1,0 @@
-Processo 1: 0,10,3
-Processo 2: 2,14,4
-Processo 3: 1,5,1
-Processo 4: 5,7,2
-Processo 5: 0,20,5

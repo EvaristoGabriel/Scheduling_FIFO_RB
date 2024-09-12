@@ -1,6 +1,4 @@
-import json #IMPORTA O JSON PARA ESCREVER AS SAÍDAS DO GRÁFICO JAVASCRIPT
 import sys
-import pandas as pd
 import matplotlib.pyplot as plt
 from Process import Process
 
@@ -67,7 +65,6 @@ def round_robin ():
 				# Adicionando novos processos ao looping, 
 				if process.start_time <= tempo_atual and process.name not in processos_ativos or process.start_time <= tempo_atual+quantum and process.name not in processos_ativos:
 					processos_ativos.append(process.name)
-		print(f"Ordem atual dos processos: {processos_ativos}")
 		for processo in processos_ativos:
 			for process in sorted_process:
 				if process.name == processo and process.get_tempo() > 0:
@@ -106,10 +103,7 @@ def round_robin ():
 	tempo_final = 0
 	for process in sorted_process:
 		tempo_final += (process.end[-1] - process.start_time) 
-		# print(f'Nome: {process.name}, Tempo sobrando: {process.get_tempo()}, tempos inicio:{process.start}, tempos finais:{process.end}')
 
-
-	print(f"Tempo final/numero de processos = {tempo_final}/{n} = {tempo_final/n}")
 	return float(tempo_final/n)
 
 
@@ -137,7 +131,7 @@ try:
 	path = sys.argv[1]
 except IndexError:
 	print("Utilizando o arquivo padrão teste 1")
-	path = "teste1.txt"
+	path = "processos.txt"
 	
 
 processes = ler_arquivo(path)
