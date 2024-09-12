@@ -132,7 +132,10 @@ Além disso, os conceitos de escalonamento de processos como FIFO e Round-Robin 
 1 - TANENBAUM, ANDREW S.; MODERNOS, Sistemas Operacionais. edição. 3.
 
 ## 6 - Grupo do trabalho
-Alvaro Domingues de Freitas - 
-André Luiz Casarim Leite - 
-Gabriel Evaristo Carlos - 201965034B
-Guilherme Soares Frias - 
+Alvaro Domingues de Freitas 
+
+André Luiz Casarim Leite 
+
+Gabriel Evaristo Carlos 
+
+Guilherme Soares Frias 
