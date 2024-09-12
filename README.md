@@ -3,19 +3,25 @@
 
 Este projeto implementa os algoritmos de escalonamento de tarefas FIFO (First In First Out) e Round-Robin, utilizando a linguagem Python. O objetivo é simular a execução de processos com base nesses algoritmos e calcular o turnaround time para cada processo, visualizando os resultados graficamente.
 
-- FIFO: executa os processos na ordem de chegada.
+- **FIFO**: executa os processos na ordem de chegada.
 
-- Round-Robin: executa os processos em ciclos, com um tempo fixo de quantum para cada processo.
+- **Round-Robin**: executa os processos em ciclos, com um tempo fixo de quantum para cada processo.
 
 
 ## 2 - Ambiente de desenvolvimento
 
-Sistema operacional: Ubuntu 22.04.4 LTS
-Linguagem: Python 3.10
-Bibliotecas: 
-Random: Geração de números aleatórios para criação de processos.
-Sys: Utilização de parâmetros passados pelo terminal.
-Matplotlib: Utilizada para visualização gráfica dos processos e seus tempos de execução. 
+**Sistema operacional**: Ubuntu 22.04.4 LTS
+
+**Linguagem**: Python 3.10
+
+**Bibliotecas**: 
+
+**Random**: Geração de números aleatórios para criação de processos.
+
+**Sys**: Utilização de parâmetros passados pelo terminal.
+
+**Matplotlib**: Utilizada para visualização gráfica dos processos e seus tempos de execução. 
+
 	Instalação de dependências:
 
 `pip install matplotlib`
@@ -23,13 +29,13 @@ Matplotlib: Utilizada para visualização gráfica dos processos e seus tempos d
 3 - Estrutura de diretórios
 O trabalho possui a seguinte estrutura de diretórios:
 
-├── gerarProcesso.py #Código para gerar processos aleatórios
+├── **gerarProcesso.py** #Código para gerar processos aleatórios
 
-├── Process.py #Define a classe Process e suas funcionalidades
+├── **Process.py** #Define a classe Process e suas funcionalidades
 
-├── trabalhoSO.py #Implementação dos algoritmos FIFO e Round-Robin
+├── **trabalhoSO.py** #Implementação dos algoritmos FIFO e Round-Robin
 
-├── processos.txt #Arquivo de entrada gerado com os processos
+├── **processos.txt** #Arquivo de entrada gerado com os processos
 
 ## 4 - Arquivos principais
 
@@ -123,7 +129,7 @@ O projeto foi desenvolvido inteiramente com base nos conceitos e algoritmos disc
 
 Além disso, os conceitos de escalonamento de processos como FIFO e Round-Robin são amplamente discutidos em diversos materiais acadêmicos e livros de referência na área de sistemas operacionais, como:
 
-TANENBAUM, ANDREW S.; MODERNOS, Sistemas Operacionais. edição. 3.
+1 - TANENBAUM, ANDREW S.; MODERNOS, Sistemas Operacionais. edição. 3.
 
 ## 6 - Grupo do trabalho
 Alvaro Domingues de Freitas - 
